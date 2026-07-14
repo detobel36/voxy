@@ -2,9 +2,14 @@ name: Build Java Application with Gradle
 
 on:
   push:
-    branches: [ "master", "main" ]
+    branches: [ "**" ]
   pull_request:
-    branches: [ "master", "main" ]
+    branches: [ "**" ]
+  release:
+    types: [ published ]
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -27,3 +32,9 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew build
+
+      - name: Upload JAR to Release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build/libs/*.jar
